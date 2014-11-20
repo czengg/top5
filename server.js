@@ -35,48 +35,157 @@ db.once('open', function() {
 var Schema = mongoose.Schema;
 var Collection = mongoose.Collection;
 
-var Dish = new Schema({
-  id             : { type: Number , required: true },
-  name           : { type: String , required: true },
-  type           : { type: String , required: true },
-  description    : { type: String , required: true },
-  favorited      : { type: Boolean, required: true },
-  likes          : { type: Number , required: true },
-  restaurant_id  : { type: Number , required: false } 
-});
-var DishModel = db.model('Dish', Dish);
+// var Dish = new Schema({
+//   id             : { type: Number , required: true },
+//   name           : { type: String , required: true },
+//   type           : { type: String , required: true },
+//   description    : { type: String , required: true },
+//   favorited      : { type: Boolean, required: true },
+//   likes          : { type: Number , required: true },
+// });
+// var DishModel = db.model('Dish', Dish);
 
 var Restaurant = new Schema({
   name     : { type: String, required: true },
   lat      : { type: Number, required: true },
   long      : { type: Number, required: true },
+  dishes : [{
+    name           : { type: String , required: true },
+    type           : { type: String , required: true },
+    description    : { type: String , required: true },
+    price          : { type: Number, required: true},
+    favorited      : { type: Boolean, required: true },
+    likes          : { type: Number, required: true}
+  }]
 });
+
 var RestaurantModel = db.model('Restaurant', Restaurant);
 
 router.get('/', function (req, res) {
     res.render('index');
 });
 
+// RestaurantModel.find().remove().exec();
+
+// var lulus = new RestaurantModel({
+//   name: "Lulu's Noodles",
+//   lat: 40.445, //40.4451450
+//   long: -79.949, //-79.9490840
+//   dishes : [{
+//     name: 'Pad Thai',
+//     type: 'food',
+//     description : "Thai rice noodles stir fried in a special thai sauce with egg, tofu, bean sprouts, green onions, and chopped peanuts, then garnished with bean sprouts and red cabbage.",
+//     price : 7.25,
+//     favorited : true,
+//     likes : 2
+//   },
+//   {
+//     name: 'Singapore Rice Noodle',
+//     type: 'food',
+//     description : "Vermicelli rice noodles stir fried in light curry with shrimp, chicken, bean sprouts, onion and eggs.",
+//     price : 7.25,
+//     favorited : false,
+//     likes : 4
+//   },
+//   {
+//     name: 'Beef Chow Fun',
+//     type: 'food',
+//     description : "Fried wide rice noodles, beansprouts, greenonions, stir fried in special sauce handed down from mama's recipes.",
+//     price : 7.25,
+//     favorited : false,
+//     likes : 10
+//   },
+//   {
+//     name: 'Traditional Fried Rice',
+//     type: 'food',
+//     description : "Seasoned rice, greenpeas, carrot, onion, egg, your choice of meats.",
+//     price : 7.25,
+//     favorited : false,
+//     likes : 1
+//   },
+//   {
+//     name: 'Fresh Mango Bubble Tea',
+//     type: 'drink',
+//     description : "Milk Tea with Bubbles made with Fresh Mango",
+//     price : 3.95,
+//     favorited : false,
+//     likes : 0
+//   },
+//   ]
+// });
+
+// var ab = new RestaurantModel({
+//   name: "Ali Baba",
+//   lat: 40.445, //40.4450560
+//   long: -79.949, //-79.9490590
+//   dishes : [{
+//     name: 'Hummus',
+//     type: 'food',
+//     description : "A famous vegetable dip made from mashed chick pea, mixed with crushed sesame syrup, lemon juice, topped with garlic, oregano, paprika, and oil.",
+//     price : 3.95,
+//     favorited : true,
+//     likes : 2
+//   },
+//   {
+//     name: 'Vegetarian Grape Leaves',
+//     type: 'food',
+//     description : "Cooked grape leaves stuffed with rice and ground lamb meat, served warm, or strictly vegetarian served cold",
+//     price : 4.95,
+//     favorited : false,
+//     likes : 4
+//   },
+//   {
+//     name: 'Spinach & Lentil Soup',
+//     type: 'food',
+//     description : "A delicious mixture of lentils, spinach, potatoes, lemon juice, & spices",
+//     price : 4.95,
+//     favorited : false,
+//     likes : 10
+//   },
+//   {
+//     name: 'Kebab Platter with Chicken',
+//     type: 'food',
+//     description : "A compartment dish consisting of hummus, tossed salad, rice with pignour nuts, and topped with a skewer of tender",
+//     price : 13.45,
+//     favorited : false,
+//     likes : 1
+//   },
+//   {
+//     name: 'Moussaka',
+//     type: 'drink',
+//     description : "Layers of eggplant, tomatoes, potatoes, and spiced ground lamb in a light sauce. smothered with melted cheese, and served with a salad.",
+//     price : 12.95,
+//     favorited : false,
+//     likes : 0
+//   },
+//   ]
+// });
+
+
+
+// lulus.save(function(err) {
+//     // we've updated the dog into the db here
+//     if (err) throw err;
+//   })
+
+// ab.save(function(err) {
+//     // we've updated the dog into the db here
+//     if (err) throw err;
+//   })
+
+
 // get all dishes for restaurant given longitude and latitude
 router.get('/getrestaurant/:long/:lat', function(req, res) {
- RestaurantModel.findOne({
-    long : parseInt(req.params.long),
-    lat  : parseInt(req.params.lat)
- }, function(restaurantErr, restaurant) {
+ RestaurantModel.find({
+    // name : "Lulu's Noodles"
+    long : parseFloat(req.params.long),
+    lat  : parseFloat(req.params.lat)
+ }, function(restaurantErr, restaurants) {
 
     if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
 
     var rest = restaurants;
-    DishModel.find({
-      restuarant_id : restaurant._id
-    }, function(dishErr, dishes) {
-
-      if (dishErr) { res.send(JSON.stringify(dishErr)); } 
-
-      rest.dishes = dishes;
-      rest.selected = dishes[0];
-      res.send(JSON.stringify(rest));
-    });
+    res.send(JSON.stringify(rest));
   });
 });
 
@@ -106,7 +215,7 @@ router.get('/addrestaurant/:name/:lat/:lon', function(req, res) {
   var restaurant = new RestaurantModel({
     name: req.params.name,
     lat: req.params.lat,
-    lon: req.params.lon
+    long: req.params.long
   });
   restaurant.save(function(err){
     if (err) { res.send(err) }

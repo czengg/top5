@@ -24,27 +24,27 @@ body {
   cursor: pointer;
 }
 
-.row.first {
+.row-first {
   background-color: #E74112; 
   min-height: 100px;
 }
 
-.row.second {
+.row-second {
   background-color: #FF6600;
   min-height: 100px;
 }
 
-.row.third {
+.row-third {
   background-color: #EC8651;
   min-height: 100px;
 }
 
-.row.fourth {
+.row-fourth {
   background-color: #EEA871;
   min-height: 100px;
 }
 
-.row.fifth {
+.row-fifth {
   background-color: #F1CB91;
   min-height: 100px;
 }

@@ -1,7 +1,7 @@
 var UserController = function ($scope) {
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '604987626272109',
+      appId      : '1443094199244553',
       cookie     : true,  // enable cookies to allow the server to access 
                           // the session
       xfbml      : true,  // parse social plugins on this page
