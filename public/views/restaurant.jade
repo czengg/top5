@@ -2,6 +2,7 @@
 //- RESTAURANT VIEW
 div.page(data-ng-controller="RestaurantController as c", data-ng-show="currPage === 'restaurant'")
   
+
     div.restaurant-container.row
       h1.restaurant-name {{ c.restaurant.name }}
     div.dish-container
@@ -17,3 +18,14 @@ div.page(data-ng-controller="RestaurantController as c", data-ng-show="currPage 
               p {{ dish.description }}
             div.favorite-container
               div.favorite(data-ng-class="{ liked: dish.favorited }", data-ng-click="favoriteToggle(c.restaurant, dish);")
+    div(data-ng-if="c.restaurant.unknown")
+      a(href='#' ng-click="showDetails = ! showDetails"): div.wrong-restaurant-bar
+        p Not at this restaurant? Pick another one...
+      div.modal(ng-show="showDetails")
+        h3 Nearby Restaurants
+        div(data-ng-repeat="rest in c.restaurants")
+          p {{rest.name}} - {{ rest.distance }} meters away 
+        
+
+
+

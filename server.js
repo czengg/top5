@@ -65,12 +65,17 @@ router.get('/', function (req, res) {
     res.render('index');
 });
 
+
+// ----------------------------------------------------
+// SAMPLE DATABASE STUFF
+// ----------------------------------------------------
+
 // RestaurantModel.find().remove().exec();
 
 // var lulus = new RestaurantModel({
 //   name: "Lulu's Noodles",
-//   lat: 40.445, //40.4451450
-//   long: -79.949, //-79.9490840
+//   lat: 40.4451450, //40.4451450
+//   long: -79.9490840, //-79.9490840
 //   dishes : [{
 //     name: 'Pad Thai',
 //     type: 'food',
@@ -116,8 +121,8 @@ router.get('/', function (req, res) {
 
 // var ab = new RestaurantModel({
 //   name: "Ali Baba",
-//   lat: 40.445, //40.4450560
-//   long: -79.949, //-79.9490590
+//   lat: 40.4450560, //40.4450560
+//   long: -79.9490590, //-79.9490590
 //   dishes : [{
 //     name: 'Hummus',
 //     type: 'food',
@@ -163,29 +168,48 @@ router.get('/', function (req, res) {
 
 
 
-// lulus.save(function(err) {
+// lulus.save(function(err,lulus) {
 //     // we've updated the dog into the db here
 //     if (err) throw err;
+//       console.log(ab);
 //   })
 
-// ab.save(function(err) {
+// ab.save(function(err,ab) {
 //     // we've updated the dog into the db here
 //     if (err) throw err;
+//         console.log(ab);
 //   })
+
+// ----------------------------------------------------
 
 
 // get all dishes for restaurant given longitude and latitude
 router.get('/getrestaurant/:long/:lat', function(req, res) {
+
  RestaurantModel.find({
-    // name : "Lulu's Noodles"
-    long : parseFloat(req.params.long),
-    lat  : parseFloat(req.params.lat)
+
+    // find all restaurants, then sort the data; if you can find a way to write a better query, would be awesome
+
+    // long : Number(parseFloat(req.params.long).toFixed(3)),
+    // lat  : Number(parseFloat(req.params.lat).toFixed(3))
+
  }, function(restaurantErr, restaurants) {
-
     if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
-
-    var rest = restaurants;
-    res.send(JSON.stringify(rest));
+    var rests = [];
+    for ( var j in restaurants) {
+      if (restaurants[j].lat == req.params.lat && restaurants[j].long == req.params.long) {
+        rests.push(restaurants[j]);
+      }
+    }
+    if ( rests.length == 0) {
+      console.log(rests);
+      for ( var x in restaurants) {
+        if (Number(parseFloat(restaurants[x].lat).toFixed(3)) == Number(parseFloat(req.params.lat).toFixed(3)) && Number(parseFloat(restaurants[x].long).toFixed(3)) == Number(parseFloat(req.params.long).toFixed(3))) {
+          rests.push(restaurants[x]);
+        }
+      }
+    }
+    res.send(JSON.stringify(rests));
   });
 });
 
