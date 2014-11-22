@@ -13,8 +13,12 @@ var RestaurantController = function ($http, $scope) {
       } else {
         f = 0;
       }
-      var favoriteUrl = 'http://localhost:3000/updatefavorite/' + restaurant.id + '/' + dish.id + '/' + f;
-      $http.get(favoriteUrl).success(function(data) {
+      var data = {
+        dishId : dish._id,
+        liked  : f,
+        userId : $scope.user._id
+      };
+      $http.post('/updatefavorite', data).success(function(data) {
         console.log(data);
       });
     }, 50);  
@@ -24,7 +28,7 @@ var RestaurantController = function ($http, $scope) {
     navigator.geolocation.getCurrentPosition(function(position) {
       self.long = Math.floor(position.coords.longitude);
       self.lat = Math.floor(position.coords.latitude);
-      var geoUrl = 'http://localhost:3000/getrestaurant/' + self.long + '/' + self.lat;
+      var geoUrl = '/getrestaurant/' + self.long + '/' + self.lat;
       $http.get(geoUrl).success(function(data) {
         $scope.restaurant = data;
       });

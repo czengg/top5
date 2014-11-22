@@ -36,25 +36,60 @@ var Schema = mongoose.Schema;
 var Collection = mongoose.Collection;
 
 var Dish = new Schema({
-  id             : { type: Number , required: true },
   name           : { type: String , required: true },
   type           : { type: String , required: true },
   description    : { type: String , required: true },
-  favorited      : { type: Boolean, required: true },
   likes          : { type: Number , required: true },
   restaurant_id  : { type: Number , required: false } 
 });
 var DishModel = db.model('Dish', Dish);
 
 var Restaurant = new Schema({
-  name     : { type: String, required: true },
-  lat      : { type: Number, required: true },
+  name      : { type: String, required: true },
+  lat       : { type: Number, required: true },
   long      : { type: Number, required: true },
 });
 var RestaurantModel = db.model('Restaurant', Restaurant);
 
+var User = new Schema({
+  first_name      : { type: String,  required: true },
+  fb_id           : { type: Number,  required: true },
+  favorited       : { type: Array ,  required: true}
+});
+var UserModel = db.model('User', User);
+
 router.get('/', function (req, res) {
-    res.render('index');
+  res.render('index');
+});
+
+router.post('/login', function (req, res) {
+  var isNew = UserModel.find({ fb_id : req.body.fb_id }).limit(1).size();
+
+  if (isNew === 0) {
+    var user = new User(
+      first_name : req.body.first_name,
+      fb_id      : req.body.fb_id,
+      likes      : []
+    );
+
+    user.save(function(err) {
+      if (err) { res.send(JSON.stringify(err)); }
+    });
+    res.send(JSON.stringify({
+      user  : user,
+      isNew : true
+    }));
+  } else {
+    UserModel.findOne({
+      fb_id: req.body.fb_id
+    }, function(err, user) {
+      if (err) { res.send(JSON.stringify(err)); }
+      res.send(JSON.stringify({
+        user  : user,
+        isNew : false
+      }));
+    });
+  }
 });
 
 // get all dishes for restaurant given longitude and latitude
@@ -80,26 +115,38 @@ router.get('/getrestaurant/:long/:lat', function(req, res) {
   });
 });
 
-router.get('/updatefavorite/:restaurant/:dish/:favorite', function(req, res) {
+router.post('/updatefavorite', function(req, res) {
   DishModel.findOne({
-    id: req.params.dish
+    id: req.body.dishId
   }, function(err, dish) {
-    if (err) { res.send(err) }
-    if (req.params.dish === 1) {
-      dish.favorited = true;
+    if (err) { res.send(JSON.stringify(err)); }
+    if (req.body.liked === 1) {
       dish.likes += 1;
     } else {
-      dish.favorited = false;
       dish.likes -= 1;
     }
     dish.save(function(err) {
       if (err) {
-        res.send(err);
+        res.send(JSON.stringify(err));
       } else {
         res.send(dish);
       }
     });
   });
+
+  UserModel.findOne({
+    id: req.body.userId
+  }, function(err, user) {
+    if (err) { res.send(JSON.stringify(err)); }
+
+    if (req.body.liked === 1) {
+      user.favorited.push(req.body.dishId);
+    } else {
+      var i = user.favorited.indexOf(req.body.dishId);
+      user.favorited.splice(i, 1);
+    }
+  });
+
 });
 
 router.get('/addrestaurant/:name/:lat/:lon', function(req, res) {

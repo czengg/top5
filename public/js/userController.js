@@ -53,8 +53,7 @@ var UserController = function ($scope) {
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      $scope.currPage = "restaurant";
-      this.id = response.authResponse.userID;
+      apiCall(response.authResponse.userID);
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       $scope.currPage = "login";
@@ -67,6 +66,23 @@ var UserController = function ($scope) {
       document.getElementById('status').innerHTML = 'Please log ' +
         'into Facebook.';
     }
+  }
+
+  function apiCall(userId) {
+    FB.api('/me', function(response) {
+      var data = {
+        fb_id      : userId,
+        first_name : response.name
+      };
+      $http.post('/login',data).success(function(data) {
+        $scope.user = data.user;
+        if (data.isNew) {
+          $scope.currPage = "splash";
+        } else {
+          $scope.currPage = "restaurant";
+        }
+      });
+    });
   }
 
   $scope.currPage = "load";
