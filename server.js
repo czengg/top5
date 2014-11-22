@@ -49,13 +49,15 @@ var Restaurant = new Schema({
   name     : { type: String, required: true },
   lat      : { type: Number, required: true },
   long      : { type: Number, required: true },
+  hasMenu   : { type: Boolean, required: true}.
   dishes : [{
     name           : { type: String , required: true },
     type           : { type: String , required: true },
     description    : { type: String , required: true },
     price          : { type: Number, required: true},
     favorited      : { type: Boolean, required: true },
-    likes          : { type: Number, required: true}
+    likes          : { type: Number, required: true},
+    menuCat        : { type: String, required: true}
   }]
 });
 
@@ -70,115 +72,140 @@ router.get('/', function (req, res) {
 // SAMPLE DATABASE STUFF
 // ----------------------------------------------------
 
-// RestaurantModel.find().remove().exec();
+RestaurantModel.find().remove().exec();
 
-// var lulus = new RestaurantModel({
-//   name: "Lulu's Noodles",
-//   lat: 40.4451450, //40.4451450
-//   long: -79.9490840, //-79.9490840
-//   dishes : [{
-//     name: 'Pad Thai',
-//     type: 'food',
-//     description : "Thai rice noodles stir fried in a special thai sauce with egg, tofu, bean sprouts, green onions, and chopped peanuts, then garnished with bean sprouts and red cabbage.",
-//     price : 7.25,
-//     favorited : true,
-//     likes : 2
-//   },
-//   {
-//     name: 'Singapore Rice Noodle',
-//     type: 'food',
-//     description : "Vermicelli rice noodles stir fried in light curry with shrimp, chicken, bean sprouts, onion and eggs.",
-//     price : 7.25,
-//     favorited : false,
-//     likes : 4
-//   },
-//   {
-//     name: 'Beef Chow Fun',
-//     type: 'food',
-//     description : "Fried wide rice noodles, beansprouts, greenonions, stir fried in special sauce handed down from mama's recipes.",
-//     price : 7.25,
-//     favorited : false,
-//     likes : 10
-//   },
-//   {
-//     name: 'Traditional Fried Rice',
-//     type: 'food',
-//     description : "Seasoned rice, greenpeas, carrot, onion, egg, your choice of meats.",
-//     price : 7.25,
-//     favorited : false,
-//     likes : 1
-//   },
-//   {
-//     name: 'Fresh Mango Bubble Tea',
-//     type: 'drink',
-//     description : "Milk Tea with Bubbles made with Fresh Mango",
-//     price : 3.95,
-//     favorited : false,
-//     likes : 0
-//   },
-//   ]
-// });
+var lulus = new RestaurantModel({
+  name: "Lulu's Noodles",
+  lat: 40.4451450, //40.4451450
+  long: -79.9490840, //-79.9490840
+  hasMenu: false,
+  dishes : [{
+    name: 'Pad Thai',
+    type: 'food',
+    description : "Thai rice noodles stir fried in a special thai sauce with egg, tofu, bean sprouts, green onions, and chopped peanuts, then garnished with bean sprouts and red cabbage.",
+    price : 7.25,
+    favorited : true,
+    likes : 2
+  },
+  {
+    name: 'Singapore Rice Noodle',
+    type: 'food',
+    description : "Vermicelli rice noodles stir fried in light curry with shrimp, chicken, bean sprouts, onion and eggs.",
+    price : 7.25,
+    favorited : false,
+    likes : 4
+  },
+  {
+    name: 'Beef Chow Fun',
+    type: 'food',
+    description : "Fried wide rice noodles, beansprouts, greenonions, stir fried in special sauce handed down from mama's recipes.",
+    price : 7.25,
+    favorited : false,
+    likes : 10
+  },
+  {
+    name: 'Traditional Fried Rice',
+    type: 'food',
+    description : "Seasoned rice, greenpeas, carrot, onion, egg, your choice of meats.",
+    price : 7.25,
+    favorited : false,
+    likes : 1
+  },
+  {
+    name: 'Fresh Mango Bubble Tea',
+    type: 'drink',
+    description : "Milk Tea with Bubbles made with Fresh Mango",
+    price : 3.95,
+    favorited : false,
+    likes : 0
+  },
+  ]
+});
 
-// var ab = new RestaurantModel({
-//   name: "Ali Baba",
-//   lat: 40.4450560, //40.4450560
-//   long: -79.9490590, //-79.9490590
-//   dishes : [{
-//     name: 'Hummus',
-//     type: 'food',
-//     description : "A famous vegetable dip made from mashed chick pea, mixed with crushed sesame syrup, lemon juice, topped with garlic, oregano, paprika, and oil.",
-//     price : 3.95,
-//     favorited : true,
-//     likes : 2
-//   },
-//   {
-//     name: 'Vegetarian Grape Leaves',
-//     type: 'food',
-//     description : "Cooked grape leaves stuffed with rice and ground lamb meat, served warm, or strictly vegetarian served cold",
-//     price : 4.95,
-//     favorited : false,
-//     likes : 4
-//   },
-//   {
-//     name: 'Spinach & Lentil Soup',
-//     type: 'food',
-//     description : "A delicious mixture of lentils, spinach, potatoes, lemon juice, & spices",
-//     price : 4.95,
-//     favorited : false,
-//     likes : 10
-//   },
-//   {
-//     name: 'Kebab Platter with Chicken',
-//     type: 'food',
-//     description : "A compartment dish consisting of hummus, tossed salad, rice with pignour nuts, and topped with a skewer of tender",
-//     price : 13.45,
-//     favorited : false,
-//     likes : 1
-//   },
-//   {
-//     name: 'Moussaka',
-//     type: 'drink',
-//     description : "Layers of eggplant, tomatoes, potatoes, and spiced ground lamb in a light sauce. smothered with melted cheese, and served with a salad.",
-//     price : 12.95,
-//     favorited : false,
-//     likes : 0
-//   },
-//   ]
-// });
+var ab = new RestaurantModel({
+  name: "Ali Baba",
+  lat: 40.4450560, //40.4450560
+  long: -79.9490590, //-79.9490590
+  hasMenu: true,
+  dishes : [{
+    name: 'Hummus',
+    type: 'food',
+    description : "A famous vegetable dip made from mashed chick pea, mixed with crushed sesame syrup, lemon juice, topped with garlic, oregano, paprika, and oil.",
+    price : 3.95,
+    favorited : true,
+    likes : 2,
+    menuCat: "A La Carte"
+  },
+  {
+    name: 'Vegetarian Grape Leaves',
+    type: 'food',
+    description : "Cooked grape leaves stuffed with rice and ground lamb meat, served warm, or strictly vegetarian served cold",
+    price : 4.95,
+    favorited : false,
+    likes : 4,
+    menuCat: "A La Carte"
+  },
+  {
+    name: 'Spinach & Lentil Soup',
+    type: 'food',
+    description : "A delicious mixture of lentils, spinach, potatoes, lemon juice, & spices",
+    price : 4.95,
+    favorited : false,
+    likes : 10,
+    menuCat: "A La Carte"
+  },
+  {
+    name: 'Kebab Platter with Chicken',
+    type: 'food',
+    description : "A compartment dish consisting of hummus, tossed salad, rice with pignour nuts, and topped with a skewer of tender",
+    price : 13.45,
+    favorited : false,
+    likes : 1,
+    menuCat: "Main"
+  },
+  {
+    name: 'Moussaka',
+    type: 'drink',
+    description : "Layers of eggplant, tomatoes, potatoes, and spiced ground lamb in a light sauce. smothered with melted cheese, and served with a salad.",
+    price : 12.95,
+    favorited : false,
+    likes : 0,
+    menuCat: "Main"
+  },
+  {
+    name: 'Shish Kebab Dinner',
+    type: 'food',
+    description : "Tender pieces of the finest meat, made to your taste served with a toassed salad, and rice. includes a beverage and dessert.",
+    price : 14.95,
+    favorited : false,
+    likes : 0,
+    menuCat: "Main"
+  },
+  {
+    name: 'Baklawa',
+    type: 'food',
+    description : "Phyllo dough filled with ground walnuts, soaked with honey",
+    price : 2.45,
+    favorited : false,
+    likes : 0,
+    menuCat: "Pastries"
+  }
+  ]
+});
 
 
 
-// lulus.save(function(err,lulus) {
-//     // we've updated the dog into the db here
-//     if (err) throw err;
-//       console.log(ab);
-//   })
+lulus.save(function(err,lulus) {
+    // we've updated the dog into the db here
+    if (err) throw err;
+      console.log(ab);
+  })
 
-// ab.save(function(err,ab) {
-//     // we've updated the dog into the db here
-//     if (err) throw err;
-//         console.log(ab);
-//   })
+ab.save(function(err,ab) {
+    // we've updated the dog into the db here
+    if (err) throw err;
+        console.log(ab);
+  })
 
 // ----------------------------------------------------
 
