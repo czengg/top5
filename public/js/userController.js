@@ -1,4 +1,4 @@
-var UserController = function ($scope) {
+var UserController = function ($scope, $http) {
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '604987626272109',
@@ -59,12 +59,14 @@ var UserController = function ($scope) {
       $scope.currPage = "login";
       document.getElementById('status').innerHTML = 'Please log ' +
         'into this app.';
+      $scope.$apply();
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
       $scope.currPage = "login";
       document.getElementById('status').innerHTML = 'Please log ' +
         'into Facebook.';
+      $scope.$apply();
     }
   }
 
@@ -76,6 +78,7 @@ var UserController = function ($scope) {
       };
       $http.post('/login',data).success(function(data) {
         $scope.user = data.user;
+        console.log(data);
         if (data.isNew) {
           $scope.currPage = "splash";
         } else {
