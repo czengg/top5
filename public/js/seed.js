@@ -70,4 +70,4 @@ function addAlis(response) {
     2.45, 0, response._id);  
 }
 
-seed();
+// seed();

@@ -5,18 +5,18 @@ div.page(data-ng-controller="RestaurantController as c", data-ng-show="currPage 
         div.restaurant-container.row
           h1.restaurant-name {{ rest.name }}
         div.dish-container
-          div(data-ng-repeat="dish in rest.dishes|orderBy: dish.likes")
-            div(data-ng-class=" rest.first === dish ? 'row-first' : (rest.second === dish ? 'row-second' : (rest.third === dish ? 'row-third' :(rest.fourth === dish ? 'row-fourth' : (rest.fifth === dish ? 'row-fifth' : 'row' )))) ")
+          div.dish-container-child(data-ng-repeat="dish in rest.dishes|orderBy: -dish.likes|limitTo: 5")
+            div.row(data-ng-click="rest.selected = dish.name")
               div.dish-type-container
-                div.dish-type(data-ng-class="{{ dish.type }}")
+                div.dish-type(data-ng-class="dish.category")
               div.dish
-                div.dish-summary(data-ng-click="rest.selected = dish")
+                div.dish-summary
                   h1.dish-name {{ dish.name }}
                   h2.dish-price {{ dish.price | currency }}
-                div.dish-description.animate-show(data-ng-show="rest.selected === dish")
+                div.dish-description.animate-show(data-ng-show="rest.selected === dish.name")
                   p {{ dish.description }}
-                div.favorite-container
-                  div.favorite(data-ng-class="{ liked: dish.favorited }", data-ng-click="favoriteToggle(c.restaurant, dish);")
+                div.favorite-container(data-ng-click="favoriteToggle(dish);")
+                  div.favorite(data-ng-class="{ liked : dish.favorited }")
     a(href='#' ng-click="showDetails = ! showDetails"): div.wrong-restaurant-bar
       p Not at this restaurant? Pick another one...
     div.modal(ng-show="showDetails")
