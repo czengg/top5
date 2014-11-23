@@ -41,11 +41,10 @@ var Collection = mongoose.Collection;
 
 var Dish = new Schema({
   name           : { type: String , required: true },
-  type           : { type: String , required: true },
+  category       : { type: String , required: true },
   description    : { type: String , required: true },
   likes          : { type: Number , required: true },
-  menuCat        : { type: String,  required: true },
-  restaurant_id  : { type: Number , required: false } 
+  restaurant_id  : { type: String , required: false } 
 });
 var DishModel = db.model('Dish', Dish);
 
@@ -319,23 +318,23 @@ router.post('/login', function (req, res) {
 // });
 
 router.get('/getrestaurant/:long/:lat', function(req, res) {
- RestaurantModel.find({
+ // RestaurantModel.find({
     
- }, function(restaurantErr, restaurants) {
-    if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
-    for (var rest in restaurants) {
-      DishModel.find({
-        restuarant_id : restaurants[rest]._id
-      }, function(dishErr, foundDishes) {
-        if (dishErr) { res.send(JSON.stringify(dishErr)); } 
-        console.log(foundDishes);
-      });
+ // }, function(restaurantErr, restaurants) {
+ //    if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
+ //    for (var rest in restaurants) {
+ //      DishModel.find({
+ //        restuarant_id : restaurants[rest]._id
+ //      }, function(dishErr, foundDishes) {
+ //        if (dishErr) { res.send(JSON.stringify(dishErr)); } 
+ //        console.log(foundDishes);
+ //      });
       
-      restaurants[rest].dishes = foundDishes;
-    }
+ //      restaurants[rest].dishes = foundDishes;
+ //    }
 
-    res.send(JSON.stringify(restaurants));
-  });
+ //    res.send(JSON.stringify(restaurants));
+ //  });
 });
 
 router.post('/updatefavorite', function(req, res) {
@@ -386,20 +385,22 @@ router.post('/addrestaurant', function(req, res) {
 
 router.post('/adddish', function(req, res) {
   RestaurantModel.findOne({
-    name: req.body.restaurant
+    _id: req.body.restaurant
   }, function (err, restaurant) {
-    if (err) { res.send(err) }
-    var dish = new DishModel({
-      name: req.body.dish.name,
-      type: req.body.dish.type,
-      description: req.body.dish.description,
-      likes: req.body.dish.likes,
-      restaurant_id: restaurant._id
-    });
-    dish.save(function(err) {
-      if (err) { res.send(err) }
-      res.send(dish);
-    });
+    if (err) { res.send(err) } else {
+      var dish = new DishModel({
+        name: req.body.name,
+        category: req.body.category,
+        description: req.body.description,
+        likes: req.body.likes,
+        restaurant_id: restaurant._id
+      });
+      dish.save(function(err) {
+        if (err) { res.send(err) } else {
+          res.send(dish);
+        }
+      });
+    }
   });
 });
 
