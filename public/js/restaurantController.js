@@ -2,7 +2,6 @@ var RestaurantController = function($http, $scope) {
   var parentThis = this;
 
 
-
   this.favoriteToggle = function(restaurant, dish) {
     dish.favorited = !dish.favorited;
     var counter;
@@ -27,28 +26,39 @@ var RestaurantController = function($http, $scope) {
     }, 50);  
   }
   
-  if ($scope.currPage === "restaurant" && navigator.geolocation) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       // self.long = position.coords.longitude;
       // self.lat = position.coords.latitude;
       self.lat = 40.445;
-      self.long = -79.949;
-      var geoUrl = 'http://localhost:3000/getrestaurant/' + self.long + '/' + self.lat;
+      self.lon = -79.949;
+      var geoUrl = 'http://localhost:3000/getrestaurant/' + self.lon + '/' + self.lat;
       $http.get(geoUrl).success(function(data) {
-        console.log(data)            // like foursquare, present user with closest restaurant and then have option to choose "right" restaurant
-        parentThis.restaurants = data;
-        // calculate distance for restaurant and sort dishes while you're at it
+        
+        console.log(data);
+        parentThis.restaurants = data.restaurants;
+        var dishes = data.dishes;
+
         for (var rest in parentThis.restaurants) {
-          parentThis.restaurants[rest].distance = Number(getDistanceFromLatLonInKm(self.lat,self.long,parentThis.restaurants[rest].lat,parentThis.restaurants[rest].long)).toFixed(4) * 1000;
-          // var sortedDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.likes-obj2.likes});
-          // parentThis.restaurants[rest].dishes = sortedDishes
+          for ( var d in dishes ) {
+            if ( parentThis.restaurants[rest]._id == dishes[d]._id) {
+              parentThis.restaurants[rest].dishes = dishes[d]['dishes'];
+
+            }
+          }
+        }
+
+        for (var rest in parentThis.restaurants) {
+          parentThis.restaurants[rest].distance = Number(getDistanceFromLatLonInKm(self.lat,self.lon,parentThis.restaurants[rest].lat,parentThis.restaurants[rest].lon)).toFixed(4) * 1000;
+          var sortedDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.likes-obj2.likes});
+          parentThis.restaurants[rest].dishes = sortedDishes
           parentThis.restaurants[rest].show = false;
-          // parentThis.restaurants[rest].selected = parentThis.restaurants[rest].dishes[4];
-          // parentThis.restaurants[rest].first = parentThis.restaurants[rest].dishes[4];
-          // parentThis.restaurants[rest].second = parentThis.restaurants[rest].dishes[3];
-          // parentThis.restaurants[rest].third = parentThis.restaurants[rest].dishes[2];
-          // parentThis.restaurants[rest].fourth = parentThis.restaurants[rest].dishes[1];
-          // parentThis.restaurants[rest].fifth = parentThis.restaurants[rest].dishes[0];
+          parentThis.restaurants[rest].selected = parentThis.restaurants[rest].dishes[4];
+          parentThis.restaurants[rest].first = parentThis.restaurants[rest].dishes[4];
+          parentThis.restaurants[rest].second = parentThis.restaurants[rest].dishes[3];
+          parentThis.restaurants[rest].third = parentThis.restaurants[rest].dishes[2];
+          parentThis.restaurants[rest].fourth = parentThis.restaurants[rest].dishes[1];
+          parentThis.restaurants[rest].fifth = parentThis.restaurants[rest].dishes[0];
 
         }
         for (var rest in parentThis.restaurants) {
@@ -57,7 +67,6 @@ var RestaurantController = function($http, $scope) {
 
         parentThis.restaurants[0].show = true;
         
-
         
         });
       });
@@ -77,7 +86,8 @@ var RestaurantController = function($http, $scope) {
         }
       }
     }
-};
+  };
+
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -91,11 +101,12 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var d = R * c; // Distance in km
   return d;
 }
+
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
-
-
+ // c.restaurant.first === dish ? 'row-first' : (c.restaurant.second === dish ? 'row-second' : (c.restaurant.third === dish ? 'row-third' :(c.restaurant.fourth === dish ? 'row-fourth' : (c.restaurant.fifth === dish ? 'row-fifth' : 'row' )))) 
 
 angular.module('top5').controller('RestaurantController', RestaurantController);
+

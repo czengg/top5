@@ -67,195 +67,6 @@ router.get('/', function (req, res) {
   res.render('index');
 });
 
-
-router.post('/login', function (req, res) {
-  var isNew = UserModel.find({ fb_id : req.body.fb_id }).limit(1).size();
-
-  if (isNew === 0) {
-    var user = new User({
-      first_name : req.body.first_name,
-      fb_id      : req.body.fb_id,
-      likes      : []
-    });
-
-    user.save(function(err) {
-      if (err) { res.send(JSON.stringify(err)); }
-    });
-    res.send(JSON.stringify({
-      user  : user,
-      isNew : true
-    }));
-  } else {
-    UserModel.findOne({
-      fb_id: req.body.fb_id
-    }, function(err, user) {
-      if (err) { res.send(JSON.stringify(err)); }
-      res.send(JSON.stringify({
-        user  : user,
-        isNew : false
-      }));
-    });
-  }
-});
-
-
-// ----------------------------------------------------
-// SAMPLE DATABASE STUFF
-// ----------------------------------------------------
-
-// RestaurantModel.find().remove().exec();
-// DishModel.find().remove().exec();
-
-// var lulus = new RestaurantModel({
-//   name: "Lulu's Noodles",
-//   lat: 40.4451450, //40.4451450
-//   long: -79.9490840, //-79.9490840
-
-// });
-
-// lulus.save(function(err,lulus) {
-//     // we've updated the dog into the db here
-//     if (err) throw err;
-//       console.log(lulus);
-//   })
-
-// var lulusId = RestaurantModel.findOne({name:"Lulu's Noodles"})._id
-// var lulusDish1 = new DishModel({
-//     name: 'Pad Thai',
-//     type: 'food',
-//     description : "Thai rice noodles stir fried in a special thai sauce with egg, tofu, bean sprouts, green onions, and chopped peanuts, then garnished with bean sprouts and red cabbage.",
-//     price : 7.25,
-//     favorited : true,
-//     likes : 2,
-//     menuCat: "Noodles",
-//     restaurant_id: lulusId
-//   });
-
-// lulusDish1.save(function(err,lulusDish1) {
-//     // we've updated the dog into the db here
-//     if (err) throw err;
-//       console.log(lulusDish1);
-//   })
-
-//   {
-//     name: 'Singapore Rice Noodle',
-//     type: 'food',
-//     description : "Vermicelli rice noodles stir fried in light curry with shrimp, chicken, bean sprouts, onion and eggs.",
-//     price : 7.25,
-//     favorited : false,
-//     likes : 4
-//   },
-//   {
-//     name: 'Beef Chow Fun',
-//     type: 'food',
-//     description : "Fried wide rice noodles, beansprouts, greenonions, stir fried in special sauce handed down from mama's recipes.",
-//     price : 7.25,
-//     favorited : false,
-//     likes : 10
-//   },
-//   {
-//     name: 'Traditional Fried Rice',
-//     type: 'food',
-//     description : "Seasoned rice, greenpeas, carrot, onion, egg, your choice of meats.",
-//     price : 7.25,
-//     favorited : false,
-//     likes : 1
-//   },
-//   {
-//     name: 'Fresh Mango Bubble Tea',
-//     type: 'drink',
-//     description : "Milk Tea with Bubbles made with Fresh Mango",
-//     price : 3.95,
-//     favorited : false,
-//     likes : 0
-//   },
-//   ]
-// });
-
-// var ab = new RestaurantModel({
-//   name: "Ali Baba",
-//   lat: 40.4450560, //40.4450560
-//   long: -79.9490590, //-79.9490590
-//   hasMenu: true,
-//   dishes : [{
-//     name: 'Hummus',
-//     type: 'food',
-//     description : "A famous vegetable dip made from mashed chick pea, mixed with crushed sesame syrup, lemon juice, topped with garlic, oregano, paprika, and oil.",
-//     price : 3.95,
-//     favorited : true,
-//     likes : 2,
-//     menuCat: "A La Carte"
-//   },
-//   {
-//     name: 'Vegetarian Grape Leaves',
-//     type: 'food',
-//     description : "Cooked grape leaves stuffed with rice and ground lamb meat, served warm, or strictly vegetarian served cold",
-//     price : 4.95,
-//     favorited : false,
-//     likes : 4,
-//     menuCat: "A La Carte"
-//   },
-//   {
-//     name: 'Spinach & Lentil Soup',
-//     type: 'food',
-//     description : "A delicious mixture of lentils, spinach, potatoes, lemon juice, & spices",
-//     price : 4.95,
-//     favorited : false,
-//     likes : 10,
-//     menuCat: "A La Carte"
-//   },
-//   {
-//     name: 'Kebab Platter with Chicken',
-//     type: 'food',
-//     description : "A compartment dish consisting of hummus, tossed salad, rice with pignour nuts, and topped with a skewer of tender",
-//     price : 13.45,
-//     favorited : false,
-//     likes : 1,
-//     menuCat: "Main"
-//   },
-//   {
-//     name: 'Moussaka',
-//     type: 'drink',
-//     description : "Layers of eggplant, tomatoes, potatoes, and spiced ground lamb in a light sauce. smothered with melted cheese, and served with a salad.",
-//     price : 12.95,
-//     favorited : false,
-//     likes : 0,
-//     menuCat: "Main"
-//   },
-//   {
-//     name: 'Shish Kebab Dinner',
-//     type: 'food',
-//     description : "Tender pieces of the finest meat, made to your taste served with a toassed salad, and rice. includes a beverage and dessert.",
-//     price : 14.95,
-//     favorited : false,
-//     likes : 0,
-//     menuCat: "Main"
-//   },
-//   {
-//     name: 'Baklawa',
-//     type: 'food',
-//     description : "Phyllo dough filled with ground walnuts, soaked with honey",
-//     price : 2.45,
-//     favorited : false,
-//     likes : 0,
-//     menuCat: "Pastries"
-//   }
-//   ]
-// });
-
-
-
-
-
-// ab.save(function(err,ab) {
-//     // we've updated the dog into the db here
-//     if (err) throw err;
-//         console.log(ab);
-//   })
-
-// ----------------------------------------------------
-
-
 router.post('/login', function (req, res) {
   UserModel.findOne({
     fb_id: req.body.fb_id
@@ -286,55 +97,37 @@ router.post('/login', function (req, res) {
   });
 });
 
+// RestaurantModel.find().remove().exec();
+// DishModel.find().remove().exec();
+
+
+
 // get all dishes for restaurant given longitude and latitude
-// router.get('/getrestaurant/:long/:lat', function(req, res) {
-
-//  RestaurantModel.find({
-
-//     // find all restaurants, then sort the data; if you can find a way to write a better query, would be awesome
-
-
-//     // long : Number(parseFloat(req.params.long).toFixed(3)),
-//     // lat  : Number(parseFloat(req.params.lat).toFixed(3))
-
-//  }, function(restaurantErr, restaurants) {
-//     if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
-//     var rests = [];
-//     for ( var j in restaurants) {
-//       if (restaurants[j].lat == req.params.lat && restaurants[j].long == req.params.long) {
-//         rests.push(restaurants[j]);
-//       }
-//     }
-//     if ( rests.length == 0) {
-//       console.log(rests);
-//       for ( var x in restaurants) {
-//         if (Number(parseFloat(restaurants[x].lat).toFixed(3)) == Number(parseFloat(req.params.lat).toFixed(3)) && Number(parseFloat(restaurants[x].long).toFixed(3)) == Number(parseFloat(req.params.long).toFixed(3))) {
-//           rests.push(restaurants[x]);
-//         }
-//       }
-//     }
-//     res.send(JSON.stringify(rests));
-//   });
-// });
-
 router.get('/getrestaurant/:long/:lat', function(req, res) {
- // RestaurantModel.find({
+    RestaurantModel.find({}, function(err, restaurants) {
+      console.log(restaurants);
+    });
     
- // }, function(restaurantErr, restaurants) {
- //    if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
- //    for (var rest in restaurants) {
- //      DishModel.find({
- //        restuarant_id : restaurants[rest]._id
- //      }, function(dishErr, foundDishes) {
- //        if (dishErr) { res.send(JSON.stringify(dishErr)); } 
- //        console.log(foundDishes);
- //      });
-      
- //      restaurants[rest].dishes = foundDishes;
- //    }
+    // console.log(dishes);
+   RestaurantModel.find({}, function(err, restaurants){
+          DishModel.aggregate([
+            // { $match: {
+            //   restaurant_id: restId
+            // }},
+            { $group: {
+                _id:  "$restaurant_id", dishes: { $push: {name : "$name", category : "$category", description : "$description", likes : "$likes"} }
+            }}
+          ], function (err, result) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            res.send({restaurants : restaurants, dishes : result});
+          });
 
- //    res.send(JSON.stringify(restaurants));
- //  });
+
+    });
+    
 });
 
 router.post('/updatefavorite', function(req, res) {
@@ -373,9 +166,9 @@ router.post('/updatefavorite', function(req, res) {
 
 router.post('/addrestaurant', function(req, res) {
   var restaurant = new RestaurantModel({
-    name: req.params.name,
-    lat: req.params.lat,
-    long: req.params.long
+    name: req.body.name,
+    lat: req.body.lat,
+    lon: req.body.lon
   });
   restaurant.save(function(err){
     if (err) { res.send(err) }
@@ -403,6 +196,24 @@ router.post('/adddish', function(req, res) {
     }
   });
 });
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
 
 app.use('/', router);
 
