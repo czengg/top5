@@ -1,12 +1,13 @@
 
-var http     = require('http'),
-    path     = require('path'),
-    fs       = require('fs'),
-    url      = require('url'),
-    mongo    = require('mongodb'),
-    mongoose = require('mongoose'),
-    express  = require('express'),
-    jade = require('jade');
+var http       = require('http'),
+    path       = require('path'),
+    fs         = require('fs'),
+    url        = require('url'),
+    mongo      = require('mongodb'),
+    mongoose   = require('mongoose'),
+    express    = require('express'),
+    jade       = require('jade'),
+    bodyParser = require('body-parser');
 
 var app = express();
 var router = express.Router();
@@ -19,6 +20,10 @@ app.use(express.static(pub));
 // app.use(passport.session());
 app.set('views', pub + '/views');
 app.set('view engine', 'jade');
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 // establish mongo connection
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/data';
@@ -55,9 +60,9 @@ var Restaurant = new Schema({
 var RestaurantModel = db.model('Restaurant', Restaurant);
 
 var User = new Schema({
-  first_name      : { type: String,  required: true },
-  fb_id           : { type: Number,  required: true },
-  favorited       : { type: Array ,  required: true}
+  name            : { type: String,  required: true  },
+  fb_id           : { type: Number,  required: true  },
+  favorited       : { type: Array ,  required: false }
 });
 var UserModel = db.model('User', User);
 
@@ -65,35 +70,36 @@ router.get('/', function (req, res) {
   res.render('index');
 });
 
-// router.post('/login', function (req, res) {
-//   var isNew = UserModel.find({ fb_id : req.body.fb_id }).limit(1).size();
 
-//   if (isNew === 0) {
-//     var user = new User({
-//       first_name : req.body.first_name,
-//       fb_id      : req.body.fb_id,
-//       likes      : []
-//     });
+router.post('/login', function (req, res) {
+  var isNew = UserModel.find({ fb_id : req.body.fb_id }).limit(1).size();
 
-//     user.save(function(err) {
-//       if (err) { res.send(JSON.stringify(err)); }
-//     });
-//     res.send(JSON.stringify({
-//       user  : user,
-//       isNew : true
-//     }));
-//   } else {
-//     UserModel.findOne({
-//       fb_id: req.body.fb_id
-//     }, function(err, user) {
-//       if (err) { res.send(JSON.stringify(err)); }
-//       res.send(JSON.stringify({
-//         user  : user,
-//         isNew : false
-//       }));
-//     });
-//   }
-// });
+  if (isNew === 0) {
+    var user = new User({
+      first_name : req.body.first_name,
+      fb_id      : req.body.fb_id,
+      likes      : []
+    });
+
+    user.save(function(err) {
+      if (err) { res.send(JSON.stringify(err)); }
+    });
+    res.send(JSON.stringify({
+      user  : user,
+      isNew : true
+    }));
+  } else {
+    UserModel.findOne({
+      fb_id: req.body.fb_id
+    }, function(err, user) {
+      if (err) { res.send(JSON.stringify(err)); }
+      res.send(JSON.stringify({
+        user  : user,
+        isNew : false
+      }));
+    });
+  }
+});
 
 
 // ----------------------------------------------------
@@ -253,12 +259,43 @@ router.get('/', function (req, res) {
 // ----------------------------------------------------
 
 
+router.post('/login', function (req, res) {
+  UserModel.findOne({
+    fb_id: req.body.fb_id
+  }, function(err, user) {
+    if (err) { res.send(JSON.stringify(err)); } else {
+      if (user === null) {
+        var user = new UserModel({
+          name       : req.body.first_name,
+          fb_id      : parseInt(req.body.fb_id),
+          favorited  : new Array()
+        });
+
+        user.save(function(userErr) {
+          if (userErr) { res.send(JSON.stringify(userErr)); } else {
+            res.send(JSON.stringify({
+              user  : user,
+              isNew : true
+            }));
+          }
+        });
+      } else {
+        res.send(JSON.stringify({
+          user  : user,
+          isNew : false
+        }));
+      }
+    }
+  });
+});
+
 // get all dishes for restaurant given longitude and latitude
 // router.get('/getrestaurant/:long/:lat', function(req, res) {
 
 //  RestaurantModel.find({
 
 //     // find all restaurants, then sort the data; if you can find a way to write a better query, would be awesome
+
 
 //     // long : Number(parseFloat(req.params.long).toFixed(3)),
 //     // lat  : Number(parseFloat(req.params.lat).toFixed(3))
@@ -289,12 +326,13 @@ router.get('/getrestaurant/:long/:lat', function(req, res) {
  }, function(restaurantErr, restaurants) {
     if (restaurantErr) { res.send(JSON.stringify(restaurantErr)); }
     for (var rest in restaurants) {
-      var foundDishes = DishModel.find({
+      DishModel.find({
         restuarant_id : restaurants[rest]._id
       }, function(dishErr, foundDishes) {
         if (dishErr) { res.send(JSON.stringify(dishErr)); } 
+        console.log(foundDishes);
       });
-      console.log(foundDishes);
+      
       restaurants[rest].dishes = foundDishes;
     }
 
@@ -336,7 +374,7 @@ router.post('/updatefavorite', function(req, res) {
 
 });
 
-router.get('/addrestaurant/:name/:lat/:lon', function(req, res) {
+router.post('/addrestaurant', function(req, res) {
   var restaurant = new RestaurantModel({
     name: req.params.name,
     lat: req.params.lat,
@@ -357,7 +395,6 @@ router.post('/adddish', function(req, res) {
       name: req.body.dish.name,
       type: req.body.dish.type,
       description: req.body.dish.description,
-      favorited: req.body.dish.favorited,
       likes: req.body.dish.likes,
       restaurant_id: restaurant._id
     });

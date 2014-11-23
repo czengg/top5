@@ -26,7 +26,8 @@ var RestaurantController = function($http, $scope) {
       });
     }, 50);  
   }
-  if (navigator.geolocation) {
+  
+  if ($scope.currPage === "restaurant" && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       // self.long = position.coords.longitude;
       // self.lat = position.coords.latitude;
