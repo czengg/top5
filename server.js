@@ -43,7 +43,9 @@ var Dish = new Schema({
   name           : { type: String , required: true },
   category       : { type: String , required: true },
   description    : { type: String , required: true },
+  price          : { type: Number , required: true },
   likes          : { type: Number , required: true },
+  menu_cat       : { type: String , required: true },
   restaurant_id  : { type: String , required: false } 
 });
 var DishModel = db.model('Dish', Dish);
@@ -104,9 +106,9 @@ router.post('/login', function (req, res) {
 
 // get all dishes for restaurant given longitude and latitude
 router.get('/getrestaurant/:long/:lat', function(req, res) {
-    RestaurantModel.find({}, function(err, restaurants) {
-      console.log(restaurants);
-    });
+    // RestaurantModel.find({}, function(err, restaurants) {
+    //   console.log(restaurants);
+    // });
     
     // console.log(dishes);
    RestaurantModel.find({}, function(err, restaurants){
@@ -115,7 +117,7 @@ router.get('/getrestaurant/:long/:lat', function(req, res) {
             //   restaurant_id: restId
             // }},
             { $group: {
-                _id:  "$restaurant_id", dishes: { $push: {name : "$name", category : "$category", description : "$description", likes : "$likes"} }
+                _id:  "$restaurant_id", dishes: { $push: {_id : "$_id", name : "$name", category : "$category", description : "$description", price : "$price", menu_cat : "$menu_cat", likes : "$likes"} }
             }}
           ], function (err, result) {
             if (err) {
@@ -185,7 +187,9 @@ router.post('/adddish', function(req, res) {
         name: req.body.name,
         category: req.body.category,
         description: req.body.description,
+        price : req.body.price,
         likes: req.body.likes,
+        menu_cat : req.body.menu_cat,
         restaurant_id: restaurant._id
       });
       dish.save(function(err) {

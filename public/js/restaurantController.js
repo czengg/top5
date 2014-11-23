@@ -65,7 +65,21 @@ var RestaurantController = function($http, $scope) {
           var sortedDistance = parentThis.restaurants.sort(function(obj1, obj2){return obj1.distance-obj2.distance});
         }
 
+        for ( var rest in parentThis.restaurants) {
+          if ( parentThis.restaurants[rest].dishes.length > 5) {
+            parentThis.restaurants[rest].fullMenu = true;
+            parentThis.restaurants[rest].menuDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.menu_cat<obj2.menu_cat});
+            console.log(parentThis.restaurants[rest].menuDishes);
+          }
+          else {
+            parentThis.restaurants[rest].fullMenu = false;
+          }
+
+        }
+
         parentThis.restaurants[0].show = true;
+
+        
         
         
         });

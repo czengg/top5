@@ -2,21 +2,45 @@
 div.page(data-ng-controller="RestaurantController as c", data-ng-show="currPage === 'restaurant'")
     div(data-ng-repeat="rest in c.restaurants|orderBy: rest.distance")
       div(ng-if="rest.show")
-        div.restaurant-container.row
-          h1.restaurant-name {{ rest.name }}
-        div.dish-container
-          div(data-ng-repeat="dish in rest.dishes|orderBy: dish.likes")
-            div(data-ng-class=" rest.first === dish ? 'row-first' : (rest.second === dish ? 'row-second' : (rest.third === dish ? 'row-third' :(rest.fourth === dish ? 'row-fourth' : (rest.fifth === dish ? 'row-fifth' : 'row' )))) ")
-              div.dish-type-container
-                div.dish-type(data-ng-class="{{ dish.type }}")
-              div.dish
-                div.dish-summary(data-ng-click="rest.selected = dish")
-                  h1.dish-name {{ dish.name }}
-                  h2.dish-price {{ dish.price | currency }}
-                div.dish-description.animate-show(data-ng-show="rest.selected === dish")
-                  p {{ dish.description }}
-                div.favorite-container
-                  div.favorite(data-ng-class="{ liked: dish.favorited }", data-ng-click="favoriteToggle(c.restaurant, dish);")
+        section
+          ul(ng-init="tab = 1")
+            li(ng-class="{active:tab===1}")
+              a(href="#" ng-click="tab = 1"): What you eat?
+            li(ng-class="{active:tab===2}")
+              a(href="#" ng-click="tab = 2"): Favorite Juice?
+          br
+          div(ng-show="tab==1")
+            div.restaurant-container.row
+              h1.restaurant-name {{ rest.name }}
+            div.dish-container
+              div(data-ng-repeat="dish in rest.dishes|orderBy: dish.likes")
+                div(data-ng-class=" rest.first === dish ? 'row-first' : (rest.second === dish ? 'row-second' : (rest.third === dish ? 'row-third' :(rest.fourth === dish ? 'row-fourth' : (rest.fifth === dish ? 'row-fifth' : 'row' )))) ")
+                  div.dish-type-container
+                    div.dish-type(data-ng-class="{{ dish.type }}")
+                  div.dish
+                    div.dish-summary(data-ng-click="rest.selected = dish")
+                      h1.dish-name {{ dish.name }}
+                      h2.dish-price {{ dish.price | currency }}
+                    div.dish-description.animate-show(data-ng-show="rest.selected === dish")
+                      p {{ dish.description }}
+                    div.favorite-container
+                      div.favorite(data-ng-class="{ liked: dish.favorited }", data-ng-click="favoriteToggle(c.restaurant, dish);")
+          div(ng-show="tab==2")
+            div.restaurant-container.row
+              h1.restaurant-name {{ rest.name }} - Full Menu
+            div.dish-container
+              div.row-fifth
+              div(data-ng-repeat="dish in rest.dishes|orderBy: dish.menu_cat")
+                div.dish-type-container
+                    div.dish-type(data-ng-class="{{ dish.type }}")
+                  div.dish
+                    div.dish-summary(data-ng-click="rest.selected = dish")
+                      h1.dish-name {{ dish.name }}
+                      h2.dish-price {{ dish.price | currency }}
+                    div.dish-description.animate-show(data-ng-show="rest.selected === dish")
+                      p {{ dish.description }}
+                    div.favorite-container
+                      div.favorite(data-ng-class="{ liked: dish.favorited }", data-ng-click="favoriteToggle(c.restaurant, dish);")
     a(href='#' ng-click="showDetails = ! showDetails"): div.wrong-restaurant-bar
       p Not at this restaurant? Pick another one...
     div.modal(ng-show="showDetails")
