@@ -16,8 +16,12 @@ var RestaurantController = function($http, $scope) {
       } else {
         f = 0;
       }
-      var favoriteUrl = 'http://localhost:3000/updatefavorite/' + restaurant.id + '/' + dish.id + '/' + f;
-      $http.get(favoriteUrl).success(function(data) {
+      var data = {
+        dishId : dish._id,
+        liked  : f,
+        userId : $scope.user._id
+      };
+      $http.post('/updatefavorite', data).success(function(data) {
         console.log(data);
       });
     }, 50);  
@@ -35,15 +39,15 @@ var RestaurantController = function($http, $scope) {
         // calculate distance for restaurant and sort dishes while you're at it
         for (var rest in parentThis.restaurants) {
           parentThis.restaurants[rest].distance = Number(getDistanceFromLatLonInKm(self.lat,self.long,parentThis.restaurants[rest].lat,parentThis.restaurants[rest].long)).toFixed(4) * 1000;
-          var sortedDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.likes-obj2.likes});
-          parentThis.restaurants[rest].dishes = sortedDishes
+          // var sortedDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.likes-obj2.likes});
+          // parentThis.restaurants[rest].dishes = sortedDishes
           parentThis.restaurants[rest].show = false;
-          parentThis.restaurants[rest].selected = parentThis.restaurants[rest].dishes[4];
-          parentThis.restaurants[rest].first = parentThis.restaurants[rest].dishes[4];
-          parentThis.restaurants[rest].second = parentThis.restaurants[rest].dishes[3];
-          parentThis.restaurants[rest].third = parentThis.restaurants[rest].dishes[2];
-          parentThis.restaurants[rest].fourth = parentThis.restaurants[rest].dishes[1];
-          parentThis.restaurants[rest].fifth = parentThis.restaurants[rest].dishes[0];
+          // parentThis.restaurants[rest].selected = parentThis.restaurants[rest].dishes[4];
+          // parentThis.restaurants[rest].first = parentThis.restaurants[rest].dishes[4];
+          // parentThis.restaurants[rest].second = parentThis.restaurants[rest].dishes[3];
+          // parentThis.restaurants[rest].third = parentThis.restaurants[rest].dishes[2];
+          // parentThis.restaurants[rest].fourth = parentThis.restaurants[rest].dishes[1];
+          // parentThis.restaurants[rest].fifth = parentThis.restaurants[rest].dishes[0];
 
         }
         for (var rest in parentThis.restaurants) {
