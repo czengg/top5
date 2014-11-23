@@ -16,8 +16,6 @@ var pub = path.join(__dirname, 'public');
 //all environments
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(pub));
-// app.use(passport.initialize());
-// app.use(passport.session());
 app.set('views', pub + '/views');
 app.set('view engine', 'jade');
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -52,7 +50,7 @@ var DishModel = db.model('Dish', Dish);
 var Restaurant = new Schema({
   name      : { type: String, required: true },
   lat       : { type: Number, required: true },
-  long      : { type: Number, required: true },
+  lon      : { type: Number, required: true },
 });
 var RestaurantModel = db.model('Restaurant', Restaurant);
 
