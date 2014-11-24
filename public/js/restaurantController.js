@@ -1,6 +1,6 @@
 var RestaurantController = function($http, $scope) {
 
-  that = this;
+  var that = this;
 
   $scope.favoriteToggle = function(dish) {
     dish.favorited = !dish.favorited;
@@ -83,43 +83,43 @@ var RestaurantController = function($http, $scope) {
         that.restaurants[rest].selected = that.restaurants[rest].dishes[0];
         that.restaurants[0].show = true;
 
-        });
       });
-    }
+    });
+  }
 
-    $scope.showRest = function(restId) {
-      console.log(restId);
-      for ( var rest in that.restaurants) {
-        if (that.restaurants[rest]._id ==restId) {
-          for (var r in that.restaurants) {
-            if (that.restaurants[r].show == true) {
-              that.restaurants[r].show = false;
-            }
+  $scope.showRest = function(restId) {
+    console.log(restId);
+    for ( var rest in that.restaurants) {
+      if (that.restaurants[rest]._id ==restId) {
+        for (var r in that.restaurants) {
+          if (that.restaurants[r].show == true) {
+            that.restaurants[r].show = false;
           }
-        that.restaurants[rest].show = true;
-        $scope.showDetails = ! $scope.showDetails;
         }
+      that.restaurants[rest].show = true;
+      $scope.showDetails = ! $scope.showDetails;
       }
     }
-  };
+  }
 
-function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-  var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(lat2-lat1);  // deg2rad below
-  var dLon = deg2rad(lon2-lon1); 
-  var a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-    ; 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  var d = R * c; // Distance in km
-  return d;
-}
+  function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+  }
 
-function deg2rad(deg) {
-  return deg * (Math.PI/180)
-}
+  function deg2rad(deg) {
+    return deg * (Math.PI/180)
+  }
+};
 
  // c.restaurant.first === dish ? 'row-first' : (c.restaurant.second === dish ? 'row-second' : (c.restaurant.third === dish ? 'row-third' :(c.restaurant.fourth === dish ? 'row-fourth' : (c.restaurant.fifth === dish ? 'row-fifth' : 'row' )))) 
 

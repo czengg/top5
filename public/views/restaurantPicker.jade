@@ -1,0 +1,7 @@
+div.restaurants-container(data-ng-show="tab === 3")
+	div.restaurants-container-child(data-ng-repeat="rest in c.restaurants")
+		div.row(data-ng-click="showRest(rest._id)")
+			div.restaurant
+				div.restaurant-summary
+					h1.restaurant-name {{ rest.name }}
+					h2.restaurant-distance {{ rest.distance }} meters away

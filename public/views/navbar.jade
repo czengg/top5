@@ -1,0 +1,18 @@
+nav.navbar.navbar-default(role="navigation")
+  div.container-fluid
+    div.navbar-header
+      button.navbar-toggle.collapsed(data-toggle="collapse", type="button", data-target="#navbar-collapse-1", data-ng-show="tab === 1 || tab === 2")
+        span.sr-only Toggle Navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(data-ng-show="tab === 3") Nearby Restaurants
+      a.navbar-brand(data-ng-show="tab === 1 || tab === 2") {{ rest.name }}
+        p.restaurant-picker(data-ng-click="tab = 3") Pick a different restaurant
+
+  div.collapse.navbar-collapse(id="navbar-collapse-1", data-ng-show="tab === 1 || tab === 2")
+    ul.nav.navbar-nav
+      li(data-ng-class="{ active: tab === 1 }")
+        a(data-ng-click="tab = 1") Top 5 Dishes
+      li(data-ng-class="{ active: tab === 2 }")
+        a(data-ng-click="tab = 2") Full Menu

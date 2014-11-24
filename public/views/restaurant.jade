@@ -1,55 +1,12 @@
 //- RESTAURANT VIEW
-div.page(data-ng-controller="RestaurantController as c", data-ng-show="currPage === 'restaurant'")
+div.page(data-ng-controller="RestaurantController as c", data-ng-show="currPage === 'restaurant'", data-ng-init="tab = 1")
     div(data-ng-repeat="rest in c.restaurants|orderBy: rest.distance")
-      div(ng-if="rest.show")
-        section
-          ul(ng-init="tab = 1")
-            li(ng-class="{active:tab===1}")
-              a(href="#" ng-click="tab = 1"): Top 5 Dishes
-            li(ng-class="{active:tab===2}")
-              a(href="#" ng-click="tab = 2"): Full Menu
-          br
-          div(ng-show="tab==1")
-            div.restaurant-container.row
-              h1.restaurant-name {{ rest.name }}
-            div.dish-container
-              div.dish-container-child(data-ng-repeat="dish in rest.dishes|orderBy: -dish.likes|limitTo: 5")
-                div.row(data-ng-click="rest.selected = dish.name")
-                  div.dish-type-container
-                    div.dish-type(data-ng-class="dish.category")
-                  div.dish
-                    div.dish-summary
-                      h1.dish-name {{ dish.name }}
-                      h2.dish-price {{ dish.price | currency }}
-                    div.dish-description.animate-show(data-ng-show="rest.selected === dish.name")
-                      p {{ dish.description }}
-                    div.favorite-container(data-ng-click="favoriteToggle(dish);")
-                      div.favorite(data-ng-class="{ liked : dish.favorited }")
-          div(ng-show="tab==2")
-            div.restaurant-container.row
-              h1.restaurant-name {{ rest.name }} - Full Menu
-              div.dish-container
-                div.dish-container-child(data-ng-repeat="cat in rest.menu_cats")
-                  h1 {{cat}}
-                  div(data-ng-repeat="dish in rest.dishes|orderBy: dish.name")
-                    div(ng-if="dish.menu_cat == cat")
-                      div.row(data-ng-click="rest.selected = dish.name")
-                        div.dish-type-container
-                          div.dish-type(data-ng-class="dish.category")
-                        div.dish
-                          div.dish-summary
-                            h1.dish-name {{ dish.name }}
-                            h2.dish-price {{ dish.price | currency }}
-                          div.dish-description.animate-show(data-ng-show="rest.selected === dish.name")
-                            p {{ dish.description }}
-                          div.favorite-container(data-ng-click="favoriteToggle(dish);")
-                            div.favorite(data-ng-class="{ liked : dish.favorited }")
-                
+      div(data-ng-if="rest.show")
 
-                
-    a(href='#' ng-click="showDetails = ! showDetails"): div.wrong-restaurant-bar
-      p Not at this restaurant? Pick another one...
-    div.modal(ng-show="showDetails")
-      h3 Nearby Restaurants
-      div(data-ng-repeat="rest in c.restaurants")
-        a(href='#' ng-click="showRest(rest._id)" ): p {{rest.name}} - {{ rest.distance }} meters away 
+        include navbar
+
+        include topFive
+
+        include fullMenu       
+
+        include restaurantPicker

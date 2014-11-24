@@ -1,0 +1,14 @@
+div(ng-show="tab==1")
+  div.dish-container
+    div.dish-container-child(data-ng-repeat="dish in rest.dishes|orderBy: -dish.likes|limitTo: 5")
+      div.row(data-ng-click="rest.selected = dish.name")
+        div.dish-type-container
+          div.dish-type(data-ng-class="dish.category")
+        div.dish
+          div.dish-summary
+            h1.dish-name {{ dish.name }}
+            h2.dish-price {{ dish.price | currency }}
+          div.dish-description.animate-show(data-ng-show="rest.selected === dish.name")
+            p {{ dish.description }}
+          div.favorite-container(data-ng-click="favoriteToggle(dish);")
+            div.favorite(data-ng-class="{ liked : dish.favorited }")

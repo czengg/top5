@@ -1,0 +1,17 @@
+div(data-ng-show="tab==2")
+  div.dish-container
+    div.dish-container-child(data-ng-repeat="cat in rest.menu_cats")
+      h1 {{cat}}
+      div(data-ng-repeat="dish in rest.dishes|orderBy: dish.name")
+        div(ng-if="dish.menu_cat == cat")
+          div.row(data-ng-click="rest.selected = dish.name")
+            div.dish-type-container
+              div.dish-type(data-ng-class="dish.category")
+            div.dish
+              div.dish-summary
+                h1.dish-name {{ dish.name }}
+                h2.dish-price {{ dish.price | currency }}
+              div.dish-description.animate-show(data-ng-show="rest.selected === dish.name")
+                p {{ dish.description }}
+              div.favorite-container(data-ng-click="favoriteToggle(dish);")
+                div.favorite(data-ng-class="{ liked : dish.favorited }")

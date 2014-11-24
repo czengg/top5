@@ -106,66 +106,65 @@ router.post('/login', function (req, res) {
 
 // get all dishes for restaurant given longitude and latitude
 router.get('/getrestaurant/:long/:lat', function(req, res) {
-    // RestaurantModel.find({}, function(err, restaurants) {
-    //   console.log(restaurants);
-    // });
-    
-    // console.log(dishes);
-   RestaurantModel.find({}, function(err, restaurants){
-          DishModel.aggregate([
-            // { $match: {
-            //   restaurant_id: restId
-            // }},
-            { $group: {
-                _id:  "$restaurant_id", dishes: { $push: {_id : "$_id", name : "$name", category : "$category", description : "$description", price : "$price", menu_cat : "$menu_cat", likes : "$likes"} }
-            }}
-          ], function (err, result) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            res.send({restaurants : restaurants, dishes : result});
-          });
-
-
+  RestaurantModel.find({}, function(err, restaurants){
+    DishModel.aggregate([
+      { $group: {
+          _id:  "$restaurant_id", dishes: { 
+            $push: {
+              _id : "$_id", 
+              name : "$name", 
+              category : "$category", 
+              description : "$description", 
+              price : "$price", 
+              menu_cat : "$menu_cat", 
+              likes : "$likes"
+            } 
+          }
+        }
+      }
+    ], function (err, result) {
+      if (err) {
+        res.send(JSON.stringify(err));
+      } else {
+        res.send({restaurants : restaurants, dishes : result});
+      }
     });
-    
+  }); 
 });
 
 router.post('/updatefavorite', function(req, res) {
   DishModel.findOne({
     _id: req.body.dishId
   }, function(err, dish) {
-    if (err) { res.send(JSON.stringify(err)); }
-    if (req.body.liked === 1) {
-      dish.likes += 1;
-    } else {
-      dish.likes -= 1;
-    }
-    dish.save(function(err) {
-      if (err) {
-        res.send(JSON.stringify(err));
+    if (err) { res.send(JSON.stringify(err)); } else {
+      if (req.body.liked === 1) {
+        dish.likes += 1;
+      } else {
+        dish.likes -= 1;
       }
+      dish.save(function(err) {
+        if (err) { res.send(JSON.stringify(err)); } else {
+          UserModel.findOne({
+            _id: req.body.userId
+          }, function(err, user) {
+            if (err) { res.send(JSON.stringify(err)); } else {
 
-      UserModel.findOne({
-        _id: req.body.userId
-      }, function(err, user) {
-        if (err) { res.send(JSON.stringify(err)); }
-
-        if (req.body.liked === 1) {
-          user.favorited.push(req.body.dishId);
-        } else {
-          var i = user.favorited.indexOf(req.body.dishId);
-          user.favorited.splice(i, 1);
+              if (req.body.liked === 1) {
+                user.favorited.push(req.body.dishId);
+              } else {
+                var i = user.favorited.indexOf(req.body.dishId);
+                user.favorited.splice(i, 1);
+              }
+              user.save(function(userErr) {
+                if (userErr) { res.send(JSON.stringify(userErr)); } else {
+                  res.send(user);
+                }
+              });
+            }
+          });
         }
-        user.save(function(userErr) {
-          if (userErr) { res.send(JSON.stringify(userErr)); }
-          else {
-            res.send(user);
-          }
-        });
       });
-    });
+    }
   });
 
 });
@@ -177,8 +176,9 @@ router.post('/addrestaurant', function(req, res) {
     lon: req.body.lon
   });
   restaurant.save(function(err){
-    if (err) { res.send(err) }
-    res.send(restaurant);
+    if (err) { res.send(err) } else {
+      res.send(restaurant);
+    }
   });
 });
 
