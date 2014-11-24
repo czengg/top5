@@ -134,7 +134,7 @@ router.get('/getrestaurant/:long/:lat', function(req, res) {
 
 router.post('/updatefavorite', function(req, res) {
   DishModel.findOne({
-    id: req.body.dishId
+    _id: req.body.dishId
   }, function(err, dish) {
     if (err) { res.send(JSON.stringify(err)); }
     if (req.body.liked === 1) {
@@ -145,23 +145,27 @@ router.post('/updatefavorite', function(req, res) {
     dish.save(function(err) {
       if (err) {
         res.send(JSON.stringify(err));
-      } else {
-        res.send(dish);
       }
+
+      UserModel.findOne({
+        _id: req.body.userId
+      }, function(err, user) {
+        if (err) { res.send(JSON.stringify(err)); }
+
+        if (req.body.liked === 1) {
+          user.favorited.push(req.body.dishId);
+        } else {
+          var i = user.favorited.indexOf(req.body.dishId);
+          user.favorited.splice(i, 1);
+        }
+        user.save(function(userErr) {
+          if (userErr) { res.send(JSON.stringify(userErr)); }
+          else {
+            res.send(user);
+          }
+        });
+      });
     });
-  });
-
-  UserModel.findOne({
-    id: req.body.userId
-  }, function(err, user) {
-    if (err) { res.send(JSON.stringify(err)); }
-
-    if (req.body.liked === 1) {
-      user.favorited.push(req.body.dishId);
-    } else {
-      var i = user.favorited.indexOf(req.body.dishId);
-      user.favorited.splice(i, 1);
-    }
   });
 
 });

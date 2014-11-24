@@ -1,9 +1,10 @@
 var RestaurantController = function($http, $scope) {
-  var parentThis = this;
 
+  that = this;
 
-  this.favoriteToggle = function(restaurant, dish) {
+  $scope.favoriteToggle = function(dish) {
     dish.favorited = !dish.favorited;
+    console.log(dish);
     var counter;
     var f;
     if (counter !== undefined) {
@@ -15,6 +16,7 @@ var RestaurantController = function($http, $scope) {
       } else {
         f = 0;
       }
+      console.log(dish._id);
       var data = {
         dishId : dish._id,
         liked  : f,
@@ -35,67 +37,66 @@ var RestaurantController = function($http, $scope) {
       var geoUrl = 'http://localhost:3000/getrestaurant/' + self.lon + '/' + self.lat;
       $http.get(geoUrl).success(function(data) {
         
-        console.log(data);
-        parentThis.restaurants = data.restaurants;
+        that.restaurants = data.restaurants;
         var dishes = data.dishes;
 
-        for (var rest in parentThis.restaurants) {
+        for (var rest in that.restaurants) {
+          that.restaurants[rest].menu_cats = [];
           for ( var d in dishes ) {
-            if ( parentThis.restaurants[rest]._id == dishes[d]._id) {
-              parentThis.restaurants[rest].dishes = dishes[d]['dishes'];
+            if ( that.restaurants[rest]._id == dishes[d]._id) {
+              dishes[d]['dishes'].forEach(function(dish) {
+                if (that.restaurants[rest].menu_cats.indexOf(dish.menu_cat) == -1){
+                  that.restaurants[rest].menu_cats.push(dish.menu_cat);
+                }
+                try{
+                  var i = $scope.user.favorited.indexOf(dish._id);
+                  if (i < 0) {
+                    dish.favorited = false;
+                  } else {
+                    dish.favorited = true;
+                  }
+                }catch(e){
+                  console.log(e);
+                }
+              });
+
+              that.restaurants[rest].dishes = dishes[d]['dishes'];
+              
+
 
             }
           }
+          console.log(that.restaurants[rest].menu_cats);
         }
 
-        for (var rest in parentThis.restaurants) {
-          parentThis.restaurants[rest].distance = Number(getDistanceFromLatLonInKm(self.lat,self.lon,parentThis.restaurants[rest].lat,parentThis.restaurants[rest].lon)).toFixed(4) * 1000;
-          var sortedDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.likes-obj2.likes});
-          parentThis.restaurants[rest].dishes = sortedDishes
-          parentThis.restaurants[rest].show = false;
-          parentThis.restaurants[rest].selected = parentThis.restaurants[rest].dishes[4];
-          parentThis.restaurants[rest].first = parentThis.restaurants[rest].dishes[4];
-          parentThis.restaurants[rest].second = parentThis.restaurants[rest].dishes[3];
-          parentThis.restaurants[rest].third = parentThis.restaurants[rest].dishes[2];
-          parentThis.restaurants[rest].fourth = parentThis.restaurants[rest].dishes[1];
-          parentThis.restaurants[rest].fifth = parentThis.restaurants[rest].dishes[0];
 
+
+        for (var rest in that.restaurants) {
+          that.restaurants[rest].distance = Number(getDistanceFromLatLonInKm(self.lat,self.lon,that.restaurants[rest].lat,that.restaurants[rest].lon)).toFixed(4) * 1000;
+          that.restaurants[rest].show = false;
+          
         }
-        for (var rest in parentThis.restaurants) {
-          var sortedDistance = parentThis.restaurants.sort(function(obj1, obj2){return obj1.distance-obj2.distance});
+        for (var rest in that.restaurants) {
+          var sortedDistance = that.restaurants.sort(function(obj1, obj2){return obj1.distance-obj2.distance});
         }
 
-        for ( var rest in parentThis.restaurants) {
-          if ( parentThis.restaurants[rest].dishes.length > 5) {
-            parentThis.restaurants[rest].fullMenu = true;
-            parentThis.restaurants[rest].menuDishes = parentThis.restaurants[rest].dishes.sort(function(obj1, obj2){return obj1.menu_cat<obj2.menu_cat});
-            console.log(parentThis.restaurants[rest].menuDishes);
-          }
-          else {
-            parentThis.restaurants[rest].fullMenu = false;
-          }
+        that.restaurants[rest].selected = that.restaurants[rest].dishes[0];
+        that.restaurants[0].show = true;
 
-        }
-
-        parentThis.restaurants[0].show = true;
-
-        
-        
-        
         });
       });
     }
 
     $scope.showRest = function(restId) {
-      for ( var rest in parentThis.restaurants) {
-        if (parentThis.restaurants[rest]._id ==restId) {
-          console.log(parentThis.restaurants[rest].name);
-          for (var r in parentThis.restaurants) {
-            if (parentThis.restaurants[r].show == true) {
-              parentThis.restaurants[r].show = false;
+      console.log(restId);
+      for ( var rest in that.restaurants) {
+        if (that.restaurants[rest]._id ==restId) {
+          for (var r in that.restaurants) {
+            if (that.restaurants[r].show == true) {
+              that.restaurants[r].show = false;
             }
           }
-        parentThis.restaurants[rest].show = true;
+        that.restaurants[rest].show = true;
         $scope.showDetails = ! $scope.showDetails;
         }
       }
