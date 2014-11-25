@@ -38,51 +38,42 @@ var RestaurantController = function($http, $scope) {
       $http.get(geoUrl).success(function(data) {
         
         that.restaurants = data.restaurants;
-        var dishes = data.dishes;
+        var aggregated = data.dishes;
 
         for (var rest in that.restaurants) {
-          that.restaurants[rest].menu_cats = [];
-          for ( var d in dishes ) {
-            if ( that.restaurants[rest]._id == dishes[d]._id) {
-              dishes[d]['dishes'].forEach(function(dish) {
-                if (that.restaurants[rest].menu_cats.indexOf(dish.menu_cat) == -1){
-                  that.restaurants[rest].menu_cats.push(dish.menu_cat);
+
+          // ADD CATEGORIES AND FAVORITES
+          var restaurant = that.restaurants[rest];
+          restaurant.menu_cats = {};
+
+          for ( var g in aggregated ) {
+            var group = aggregated[g];
+            if ( restaurant._id === group._id) {
+              group.dishes.forEach(function(dish) {
+                if (restaurant.menu_cats[dish.menu_cat] === undefined){
+                  restaurant.menu_cats[dish.menu_cat] = [];
                 }
-                try{
-                  var i = $scope.user.favorited.indexOf(dish._id);
-                  if (i < 0) {
-                    dish.favorited = false;
-                  } else {
-                    dish.favorited = true;
-                  }
-                }catch(e){
-                  console.log(e);
+                restaurant.menu_cats[dish.menu_cat].push(dish);
+                var i = $scope.user.favorited.indexOf(dish._id);
+                if (i < 0) {
+                  dish.favorited = false;
+                } else {
+                  dish.favorited = true;
                 }
               });
 
-              that.restaurants[rest].dishes = dishes[d]['dishes'];
-              
-
-
+              restaurant.dishes = group.dishes;
             }
           }
-          console.log(that.restaurants[rest].menu_cats);
+
+          // ADD DISTANCE AND SHOW DEFAULT
+          restaurant.distance = Number(getDistanceFromLatLonInKm(self.lat,self.lon,that.restaurants[rest].lat,that.restaurants[rest].lon)).toFixed(4) * 1000;
+          restaurant.show = false;
         }
 
+        that.restaurants.sort(function(obj1, obj2){return obj1.distance-obj2.distance});
 
-
-        for (var rest in that.restaurants) {
-          that.restaurants[rest].distance = Number(getDistanceFromLatLonInKm(self.lat,self.lon,that.restaurants[rest].lat,that.restaurants[rest].lon)).toFixed(4) * 1000;
-          that.restaurants[rest].show = false;
-          
-        }
-        for (var rest in that.restaurants) {
-          var sortedDistance = that.restaurants.sort(function(obj1, obj2){return obj1.distance-obj2.distance});
-        }
-
-        that.restaurants[rest].selected = that.restaurants[rest].dishes[0];
         that.restaurants[0].show = true;
-
       });
     });
   }
@@ -100,6 +91,7 @@ var RestaurantController = function($http, $scope) {
       $scope.showDetails = ! $scope.showDetails;
       }
     }
+    that.tab = 1;
   }
 
   function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {

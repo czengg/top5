@@ -192,6 +192,29 @@ a {
   padding: 15px 15px;
 }
 
+/* FULL MENU */
+.full-menu-category {
+  background-color: #C94627;
+  font-size: 15px;
+  padding: 0px 0px 0px 20px;
+  height: 40px;
+  position: relative;
+}
+
+.full-menu-category>h1 {
+  font-size: 20px;
+  bottom: 0px;
+  position: absolute;
+}
+
+body .full-menu-row:nth-child(odd) {
+  background-color: #E74112;
+}
+
+.full-menu-row {
+  padding: 0 0 15px 0;
+}
+
 .animate-show {
   -webkit-transition: max-height 0.5s ease-out;
   -moz-transition: max-height 0.5s ease-out;

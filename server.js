@@ -102,8 +102,6 @@ router.post('/login', function (req, res) {
 // RestaurantModel.find().remove().exec();
 // DishModel.find().remove().exec();
 
-
-
 // get all dishes for restaurant given longitude and latitude
 router.get('/getrestaurant/:long/:lat', function(req, res) {
   RestaurantModel.find({}, function(err, restaurants){
