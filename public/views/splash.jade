@@ -1,18 +1,23 @@
-html(lang='en')
-head
-    link(rel='stylesheet', href='css/style.css')
-  body
-    .swiper-container
-      .swiper-wrapper
-        .swiper-slide.two
+body
+  div(data-ng-show="currPage === 'splash'")
+    script(type='text/javascript').
+      window.onload = function() {
+        var mySwiper = new Swiper('.swiper-container',{
+          //Your options here:
+          mode:'horizontal',
+          loop: true
+          //etc..
+        });  
+      }
+    div.swiper-container
+      div.swiper-wrapper
+        div.swiper-slide.two
           img(src='images/1.png')
-        .swiper-slide.one
+        div.swiper-slide.one
           img(src='images/2.png')
-        .swiper-slide.three
+        div.swiper-slide.three
           img(src='images/3.png')
-        .swiper-slide.four
+        div.swiper-slide.four
           img(src='images/4.png')
-        .swiper-slide.five
-          a(href='home.html')
-            img(src='images/5.png')
-      script(src='js/swipe.js')
+        div.swiper-slide.five
+          a(href='/'): img(src='images/5.png')

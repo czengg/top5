@@ -54,11 +54,15 @@ var RestaurantController = function($http, $scope) {
                   restaurant.menu_cats[dish.menu_cat] = [];
                 }
                 restaurant.menu_cats[dish.menu_cat].push(dish);
-                var i = $scope.user.favorited.indexOf(dish._id);
-                if (i < 0) {
-                  dish.favorited = false;
-                } else {
-                  dish.favorited = true;
+                try {
+                  var i = $scope.user.favorited.indexOf(dish._id);
+                  if (i < 0) {
+                    dish.favorited = false;
+                  } else {
+                    dish.favorited = true;
+                  }
+                } catch(e) {
+                  console.log(e);
                 }
               });
 
