@@ -114,7 +114,6 @@ body#splash {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
   line-height: 1.5;
-  background: #f27377;
 }
 .swiper-container {
   width: 100%;
@@ -125,21 +124,6 @@ body#splash {
   bottom: 0;
   
 
-}
-.one {
-  background: #f27377;
-}
-.two {
-  background: #f27377;
-}
-.three {
-  background: #f27377;
-}
-.four {
-  background: #f27377;
-}
-.five {
-  background: #f27377;
 }
 
 img#splash{
