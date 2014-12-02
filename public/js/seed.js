@@ -23,6 +23,7 @@ function addDish(name, type, description, price, likes, restaurant, menu_cat) {
       category: type,
       description: description,
       likes: likes,
+      price: price,
       restaurant: restaurant,
       menu_cat: menu_cat
     },
@@ -37,7 +38,7 @@ function seed() {
   addRestaurant("Ali Baba", 40.4450560, -79.9490590, addAlis); 
   addRestaurant("Subway", 40.444757, -79.948953, addSubway);
   addRestaurant("All India", 40.452213, -79.952632, addAllindia);
-  addRestaurant("Union Grill", 40.169327, -80.245037, addUnionGrill);
+  // addRestaurant("Union Grill", 40.169327, -80.245037, addUnionGrill);
   addRestaurant("Quiznos", 40.44559, -79.94924, addQuiznos);
   addRestaurant("Eat Unique", 40.44560, -79.94862, addEatunique);
   addRestaurant("Yuva India Indian Eatery", 40.44482, -79.94897, addYuvaIndia);
@@ -47,35 +48,35 @@ function seed() {
 }
 
 function addLulus(response) {
-  addDish("Pad Thai", "food", "Thai rice noodles stir fried in a special thai sauce with egg, tofu, bean sprouts, green onions, and chopped peanuts, then garnished with bean sprouts and red cabbage.", 7.25, 2, "Noodle Plates", response._id);
+  addDish("Pad Thai", "food", "Thai rice noodles stir fried in a special thai sauce with egg, tofu, bean sprouts, green onions, and chopped peanuts, then garnished with bean sprouts and red cabbage.", 7.25, 2, response._id, "Noodle Plates");
 
   addDish("Singapore Rice Noodle", "food",
-    "Vermicelli rice noodles stir fried in light curry with shrimp, chicken, bean sprouts, onion and eggs.", 7.25, 4, "Noodle Plates", response._id);
+    "Vermicelli rice noodles stir fried in light curry with shrimp, chicken, bean sprouts, onion and eggs.", 7.25, 4, response._id, "Noodle Plates");
 
-  addDish("Beef Chow Fun", "food", "Fried wide rice noodles, beansprouts, greenonions, stir fried in special sauce handed down from mama's recipes.", 7.25, 10, "Noodle Plates", response._id);
+  addDish("Beef Chow Fun", "food", "Fried wide rice noodles, beansprouts, greenonions, stir fried in special sauce handed down from mama's recipes.", 7.25, 10, response._id, "Noodle Plates");
 
-  addDish("Traditional Fried Rice", "food", "Seasoned rice, greenpeas, carrot, onion, egg, your choice of meats.", 7.25, 1, "Fried Rice", response._id);
+  addDish("Traditional Fried Rice", "food", "Seasoned rice, greenpeas, carrot, onion, egg, your choice of meats.", 7.25, 1, response._id, "Fried Rice");
 
   addDish("Fresh Mango Bubble Tea", "drink", "Milk Tea with Bubbles made with Fresh Mango",
-    3.95, 0, "Cool Stuff to Drink", response._id);
+    3.95, 0, response._id, "Cool Stuff to Drink");
 }
 
 function addAlis(response) {
   addDish("Hummus", "food", "A famous vegetable dip made from mashed chick pea, mixed with crushed sesame syrup, lemon juice, topped with garlic, oregano, paprika, and oil.",
-    3.95, 2, "A La Carte", response._id);
+    3.95, 2, response._id, "A La Carte");
 
-  addDish("Vegetarian Grape Leaves", "food", "Cooked grape leaves stuffed with rice and ground lamb meat, served warm, or strictly vegetarian served cold", 4.95, 4, "A La Carte", response._id);
+  addDish("Vegetarian Grape Leaves", "food", "Cooked grape leaves stuffed with rice and ground lamb meat, served warm, or strictly vegetarian served cold", 4.95, 4, response._id, "A La Carte");
 
-  addDish("Spinach & Lentil Soup", "food", "A delicious mixture of lentils, spinach, potatoes, lemon juice, & spices", 4.95, 10, "A La Carte", response._id);
+  addDish("Spinach & Lentil Soup", "food", "A delicious mixture of lentils, spinach, potatoes, lemon juice, & spices", 4.95, 10, response._id, "A La Carte");
 
-  addDish("Kebab Platter with Chicken", "food", "A compartment dish consisting of hummus, tossed salad, rice with pignour nuts, and topped with a skewer of tender", 13.45, 1, "Main", response._id);
+  addDish("Kebab Platter with Chicken", "food", "A compartment dish consisting of hummus, tossed salad, rice with pignour nuts, and topped with a skewer of tender", 13.45, 1, response._id, "Main");
 
-  addDish("Moussaka", "food", "Layers of eggplant, tomatoes, potatoes, and spiced ground lamb in a light sauce. smothered with melted cheese, and served with a salad.", 12.95, 0, "Main", response._id);
+  addDish("Moussaka", "food", "Layers of eggplant, tomatoes, potatoes, and spiced ground lamb in a light sauce. smothered with melted cheese, and served with a salad.", 12.95, 0, response._id, "Main");
 
-  addDish("Shish Kebab Dinner", "food", "Tender pieces of the finest meat, made to your taste served with a toassed salad, and rice. includes a beverage and dessert.", 14.95, 0, "Main", response._id);
+  addDish("Shish Kebab Dinner", "food", "Tender pieces of the finest meat, made to your taste served with a toassed salad, and rice. includes a beverage and dessert.", 14.95, 0, response._id, "Main");
 
   addDish("Baklawa", "food", "Phyllo dough filled with ground walnuts, soaked with honey",
-    2.45, 0, "Pastries", response._id);  
+    2.45, 0, response._id, "Pastries");  
 }
 
 function addSubway(response) {
@@ -90,8 +91,8 @@ function addSubway(response) {
 
   addDish("Turkey Breast", "food", "Get flavor without the flab when you try this American classic. Dive into tender turkey breast piled sky-high with everything from lettuce and tomatoes to banana peppers, maybe even jalapeños if you’re feeling spicy.", 7.65, 8, response._id, "Sandwiches");
 
-  addDish("Veggie Delite", "food", "
-Crispy, crunchy and classically delicious. The Veggie Delite® is tangible proof that a sandwich can be high in flavor without being high in fat. Try a delicious combination of lettuce, tomatoes, green peppers, cucumbers and onions with your choice of fat-free condiments on freshly baked bread.",
+  addDish("Veggie Delite", "food", 
+    "Crispy, crunchy and classically delicious. The Veggie Delite® is tangible proof that a sandwich can be high in flavor without being high in fat. Try a delicious combination of lettuce, tomatoes, green peppers, cucumbers and onions with your choice of fat-free condiments on freshly baked bread.",
     6.95, 3, response._id, "Sandwiches");
 }
 
