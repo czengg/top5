@@ -85,6 +85,7 @@ var UserController = function ($scope, $http) {
           $scope.currPage = "splash";
         } else {
           $scope.currPage = "restaurant";
+          // $scope.currPage = "splash";
         }
       });
     });
